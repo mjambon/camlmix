@@ -1,0 +1,13 @@
+( ## print "with whitespace" ## )
+( ##= "with whitespace" ## )
+( ##.= "without whitespace on the left" ## )
+( ##= "without whitespace on the right" .## )
+( ##.= "without whitespace" .## )
+##= "conti-" ##
+nued on the next line
+##= "conti-" .##  
+nued on the same line
+
+specials: ####  -> ###
+          ####. -> ###.
+          .#### -> .###

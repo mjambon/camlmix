@@ -1,0 +1,8 @@
+##
+let eval num = 
+  Printf.sprintf " %s " (string_of_float num)
+##
+
+let pi = ##= eval (acos (-1.)) ##
+
+let x = unbound_value_on_purpose__check_the_location

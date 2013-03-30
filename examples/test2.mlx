@@ -1,0 +1,46 @@
+##  #use "macro.ml" .##    
+##. Camlmix.printer := ignore .##
+Ocaml quotations are delimited by either of the following
+two character sequences (shown here with an extra # symbol
+to avoid triggering a quotation):
+   ###  or ###.    initiate Ocaml interpretation, while
+   ###  or .###    resume text mode.
+  
+   ###. causes white space to the left to be removed from the output, while
+   .### similarly removes all white space followed by a newline to the right.
+
+   The delimiters chosen will cause the C comment to be the first line in
+   the output.
+
+   Two or more # symbols can be placed in the text by adding one extra
+   # character, as seen above.
+
+   Let's turn printing back on.
+## Camlmix.printer := print .##
+##..##
+## let source = "Makefile" .##    
+/* add some text here: ##= some_text .##
+ - note the newline was ignored!
+   Check whether
+   2 ###.    .###    ###    A###    ###A
+   3 ####.   .####   ####   A####   ####A
+   4 #####.  .#####  #####  A#####  #####A
+   5 ######. .###### ###### A###### ######A
+   are emitted correctly.
+*/
+
+int main() {
+    int   i     = ##= string_of_int (3 + 17) (* i.e., 20 *) ##;
+    ##. Camlmix.printer := ignore .##
+    This text will be ignored.
+    ## Camlmix.printer := print
+    .##
+    char* which = "verbatim: ### ##### ### ###= source ####";
+    ##.(*
+    This text is part of an Ocaml comment.
+    The # symbols in the char assignment above are printed,
+    allbeit with one of each # symbols in a contiguous sequence removed.
+
+    Note that we allow this comment to produce a newline in the output.*)##
+    return 0;
+}

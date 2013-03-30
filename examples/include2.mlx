@@ -1,0 +1,3 @@
+## @include "include1.mlx" .##
+From include2.mlx:
+  Bye bye.

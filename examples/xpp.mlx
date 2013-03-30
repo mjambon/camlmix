@@ -1,0 +1,16 @@
+##
+(* Load this file and line directives will be printed.
+   Very useful if you use camlmix for preprocessing OCaml programs.
+
+   Example: camlmix xpp.mlx foo.mlx -o foo.ml -clean *)
+
+let line_directive () =
+  Printf.sprintf "\n# %i %S;;\n%s" 
+    !Camlmix.line
+    !Camlmix.source 
+    (String.make (!Camlmix.char - 1) ' ')
+
+let current_printer = !Camlmix.printer
+let _ = Camlmix.printer := (fun s -> 
+			      print (line_directive ()); 
+			      current_printer s)

@@ -1,0 +1,12 @@
+##
+open Printf
+let firstname, lastname, age = param
+.##
+Parameters are: ## 
+List.iter (fun s -> print s; print " ") 
+  [ firstname; lastname; string_of_int age ] 
+##
+
+First name: ##=firstname##
+Last name: ##=lastname##
+Age: ##= string_of_int age##

@@ -1,0 +1,26 @@
+## #use "macro.ml" ##
+## let source = "hello.html" ##
+<html>
+<body>
+<h1>Source file for this page (test.mlx)</h1>
+## html_verbatim "test.mlx" ##
+<h1>Source files for camlmix</h1>
+<h2>lexer.mll</h2>
+## html_verbatim "../lexer.mll" ##
+<h2>main.ml</h2>
+## html_verbatim "../main.ml" ##
+<h2>Makefile</h2>
+## html_verbatim "Makefile" ##
+<h1>Formatted from ##= source ##</h1>
+## include_file source ##
+<h1>Source file ##= source ##</h1>
+## html_verbatim source ##
+<h1>macro.ml</h1>
+## html_verbatim "macro.ml" ##
+<hr>
+## Camlmix.printer := ignore ##
+This text will be ignored.
+## Camlmix.printer := print ##
+Author: ##= author ##
+</body>
+</html>

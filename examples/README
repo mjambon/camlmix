@@ -1,0 +1,33 @@
+The files of this directory are in the public domain.
+
+Test with:
+  make
+Clean with:
+  make clean
+
+
+simple.mlx:
+  minimalist example showing the basic syntax issues
+
+include1.mlx, include2.mlx:
+  illustration of the "include" directive
+
+xpp.mlx, prog.mlx: 
+  example of simple meta-programming. An OCaml file is produced.
+  The main issue is to report error locations correctly, which is achieved by 
+  xpp.mlx.
+
+test.mlx:
+  a longer test which produces a HTML file (where whitespace is not very 
+  significant)
+
+test2.mlx:
+  another test, produces a C file
+
+dynamic.mlx, dynamic_main.mlx:
+  compiling a template into a regular OCaml module, and calling the render
+  function from a regular program
+
+dynamic2.mlx, dynamic2_main.mlx:
+  template with multiple parameters; 
+  printing into an explicit buffer instead of stdout.
