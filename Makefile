@@ -1,7 +1,7 @@
 # Type `make' for native code
 # Type `make byte' for byte code instead of native code
 
-VERSION = 1.3.0
+VERSION = 1.3.1
 export VERSION
 
 SOURCES = \
