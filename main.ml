@@ -43,7 +43,7 @@ e.g.: Hello ## @include \"world.mlx\"; skip .## ## let x = 123 ##!
 Advanced usage:
 The OCaml program that is generated from the Camlmix files first defines
 a module called Camlmix. This module contains several variables that are 
-updated automatically and may be used explicitely by the user.
+updated automatically and may be used explicitly by the user.
 
 module Camlmix :
   sig
