@@ -1,0 +1,251 @@
+.\" groff -man -Tascii prooftree.1
+.\" ==========================================================================
+.\" ============= Synopsis ===================================================
+.\" ==========================================================================
+.TH CAMLMIX 1 "May 2013" CAMLMIX "User Manuals"
+.SH NAME
+camlmix \- preprocessor which converts text with embedded OCaml
+.SH SYNOPSIS
+.B camlmix \fR[\fIOptions...\fR] \fIfiles\fR...
+.\" ==========================================================================
+.\" ============= Description ================================================
+.\" ==========================================================================
+.SH DESCRIPTION
+.B camlmix
+processes text templates with embedded 
+.B OCaml
+code to generate text again. From one or several input files it
+generates an
+.B OCaml
+text generation program and executes this to obtain the result.
+Using option
+.I -fun
+one can also convert the text template into an 
+.B OCaml
+text generation function.
+.\"
+.\" ==========================================================================
+.\" ================ Options =================================================
+.\" ==========================================================================
+.\"
+.SH OPTIONS
+.\" ===================== -o =================================================
+.TP
+.B "-o output"
+write the generated text into file 
+.I output
+.\" ===================== -c =================================================
+.TP
+.B -c
+Only generate the text generation program, don't execute it. 
+By default, the program is called 
+.I lastfile.ml
+when
+.I lastfile
+is the last file argument.
+.\" ===================== -co ================================================
+.TP
+.B "-co file"
+specify the name of the text generation program
+.\" ===================== -fun ===============================================
+.TP
+.B "-fun"
+generate 
+.B OCaml
+code for text generation function from the input (see
+.B ADVANCED USAGE
+below)
+.\" ===================== -e =================================================
+.TP
+.B "-e ocamlc"
+set the name of the OCaml executable
+.\" ===================== -clean =============================================
+.TP
+.B "-clean"
+remove the text generation program after execution
+.\" ===================== -insert ============================================
+.TP
+.B "-insert ocaml_code"
+insert
+.I ocaml_code
+at the beginning of the text generation program
+.\" ===================== -remix =============================================
+.TP
+.B "-remix"
+try a conversion to the camlremix syntax
+.\" ===================== -a ================================================
+.TP
+.B "-version"
+print version and exit
+.\" ===================== -help ================================================
+.TP
+.B "-help | --help"
+print help and exit (this man page was written from the output of
+.I -help\fR)
+.\"
+.\" ==========================================================================
+.\" ================ Basic Usage =============================================
+.\" ==========================================================================
+.\"
+.SH BASIC USAGE
+.\" ================ General rules ===========================================
+Text enclosed with
+.I ## 
+markers is considered as a block of 
+.B OCaml
+code. It can be any kind of toplevel expressions such as
+definitions or application of printing functions:
+.P
+.RS
+This is ocaml version ## print Sys.ocaml\_version ##
+.RE
+.P
+If the
+.B OCaml
+code starts with
+.I = 
+then it is interpreted as an expression of type string that will
+printed like the rest of the text:
+.P
+.RS
+This is ocaml version ##= Sys.ocaml_version ##
+.RE
+.P
+The text block are printed together with the evaluated
+.B OCaml
+pieces using the 
+.I print
+function. Include
+.I ###
+to print
+.I ##\fR.
+.\" ==========================================================================
+.P
+White space can be controlled with
+.I ##.
+and
+.I .##\fR:
+.TP
+.B ##. 
+don't print white space occurring on the left
+.TP
+.B .## 
+don't print white space up to and including the first newline,
+following to the right.
+.\"
+.\" ==========================================================================
+.\" ================ Advanced Usage ==========================================
+.\" ==========================================================================
+.\"
+.SH ADVANCED USAGE
+.\" ================ Directives ==============================================
+.SS Directives
+Blocks of code that start with the
+.I @
+character (possibly preceded by spaces) are directives for
+Camlmix. There are two directives. 
+.I include
+inserts a camlmix file, and
+.I skip
+skips the next block. For instance
+.P
+.RS
+Hello ## @include "world.mlx"; skip .## ## let x = 123 ##!
+.RE
+.P
+.\" ================ text gen function =======================================
+.SS Conversion into a text generation function for dynamic rendering
+The 
+.I -fun
+option, used in combination with
+.I -c 
+and often
+.I -co
+produces an
+.B OCaml
+source file which provides a function
+.I render
+with the following signature:
+.P
+.RS
+val render : ?print:(string -> unit) -> 'a -> unit
+.RE
+.P
+The polymorphic argument is called
+.I param
+in the generated code and can be used to pass runtime arguments
+into the 
+.I render
+function. The
+.I print
+function is used to set the initial value of Camlmix.printer (see
+below). It's default value is:
+.P
+.RS
+       fun s -> print_string s; flush stdout
+.RE
+.P
+.\" ================ Runtime hooks ==========================================
+.SS Runtime hooks
+The text generation program, which
+.B camlmix
+generates, contains a module
+.I Camlmix
+at the beginning, which can be used in code blocks. This module
+has the following signature.
+.P
+.RS 4
+module \fBCamlmix\fR : sig
+.RS 4
+.TP
+val \fBsource\fR : string ref
+.TP
+val \fBline\fR : int ref
+.TP
+val \fBchar\fR : int ref
+Location of the first character of the current block in its
+source file. Line and character numbers count from 1. These
+references are updated by
+.B camlmix
+at the beginning of each block.
+.TP
+val \fBprinter\fR : (string -> unit) ref 
+function for printing text blocks
+.TP
+val \fBprint_with\fR : (string -> unit) -> unit
+.I print_with f
+causes the next text block to be printed with
+.I f
+instead of the current printer. Its behavior is undefined if it
+is called several times in the same code block.
+.TP
+val \fBprint_if\fR : bool -> unit
+.I print_if cond 
+prints the next text block only if condition
+.I cond 
+is true. It uses 
+.I print_with
+internally.
+.P
+.RE
+end
+.RE
+.P
+.\"
+.\" ==========================================================================
+.\" ================ SEE ALSO ================================================
+.\" ==========================================================================
+.\"
+.SH SEE ALSO
+.TP
+The \fBcamlmix\fR web page, \fIhttp://mjambon.com/camlmix/\fR
+.\"
+.\" ==========================================================================
+.\" ================ Author ==================================================
+.\" ==========================================================================
+.\"
+.SH AUTHOR
+This manual page was written by Sylvain Le Gall
+<gildor@debian.org> and Hendrik Tews <hendrik@askra.de>,
+specifically for the Debian project (and may be used by others).
+
